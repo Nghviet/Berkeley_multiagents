@@ -28,6 +28,8 @@ Giống bài 2 nhưng ở mỗi phòng for, cần thêm hàm kiểm tra và cậ
 # Bài 4:
 Giống bài 2 nhưng min_layer đổi thành Exp_layer: do là phân bố đều nên score của Exp_layer là TBC của các con
 
+Được code lại nên trông dễ đọc hơn so với bài 2 và bài 3
+
 # Bài 5:
 Nếu pacman quá gần ma chưa sợ, state đó trả về giá trị -(1e9+7) để tránh
 
