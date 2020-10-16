@@ -74,7 +74,7 @@ class ReflexAgent(Agent):
         newScaredTimes = [ghostState.scaredTimer for ghostState in newGhostStates]
         for ghost in newGhostStates:
           (gx,gy) = ghost.getPosition()
-          if abs(gx - x) + abs(gy - y) < 4 and newScaredTimes[0] is 0:
+          if abs(gx - x) + abs(gy - y) < 1 and newScaredTimes[0] is 0:
             return -float(1e9+7)
         
         mindist = 10000007
@@ -86,7 +86,7 @@ class ReflexAgent(Agent):
         if action is 'Stop':
           extra = extra - 10;
         "*** YOUR CODE HERE ***"
-        return extra * 100 - mindist
+        return successorGameState.getScore() + extra * 10 - mindist
 
 def scoreEvaluationFunction(currentGameState):
     """
@@ -191,20 +191,25 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
           Returns the minimax action using self.depth and self.evaluationFunction
         """
         "*** YOUR CODE HERE ***"
-        return self.AlphaBeta(gameState,-int(1e9+7),+int(1e9+7),self.depth * gameState.getNumAgents() - 1,0)[1]
+        action = self.AlphaBeta(gameState,-int(1e9+7),+int(1e9+7),self.depth * gameState.getNumAgents() - 1,0)[1]
+
+        return action
         util.raiseNotDefined()
 
     def AlphaBeta(self,gameState, alpha, beta, depth, agent):
         
+
+
         if agent is gameState.getNumAgents():
             agent = 0
-        
+
+
         scores = []
         if depth is 0 or gameState.isWin() or gameState.isLose():
             
             for action in gameState.getLegalActions(agent):
                 score = self.evaluationFunction(gameState.generateSuccessor(agent,action))                
-                scores.append((score,action))
+                scores.append(score)
                 if agent is 0:
                     if score > beta:
                         return (score,action)
@@ -221,15 +226,15 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
                 if agent is 0:
                     maxScore = max(scores)
                     pos = [i for i, j in enumerate(scores) if j == maxScore]
-                    return scores[random.choice(pos)]
+                    return (maxScore,gameState.getLegalActions(agent)[random.choice(pos)])
                 else:
                     minScore = min(scores)
                     pos = [i for i, j in enumerate(scores) if j == minScore]
-                    return scores[random.choice(pos)]
+                    return (minScore,gameState.getLegalActions(agent)[random.choice(pos)])
 
         for action in gameState.getLegalActions(agent):
             score = self.AlphaBeta(gameState.generateSuccessor(agent,action),alpha,beta,depth - 1, agent + 1)[0]
-            scores.append((score,action))
+            scores.append(score)
             if agent is 0:
                 if score > beta:
                     return (score,action)
@@ -247,11 +252,13 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         if agent is 0:
             maxScore = max(scores)
             pos = [i for i, j in enumerate(scores) if j == maxScore]
-            return scores[pos[0]]
+            choice = random.choice(pos)
+            return (maxScore,gameState.getLegalActions(agent)[choice])
         else:
             minScore = min(scores)
             pos = [i for i, j in enumerate(scores) if j == minScore]
-            return scores[pos[0]]
+            choice = random.choice(pos)
+            return (minScore,gameState.getLegalActions(agent)[choice])
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
